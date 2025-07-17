@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabaseClient"
+import { Button } from "@/components/ui/button"
 
 type Book = {
   id: number
@@ -25,6 +26,16 @@ export default function UserDashboard() {
   const [loading, setLoading] = useState(false)
   const [userId, setUserId] = useState<string | null>(null)
   const [search, setSearch] = useState("")
+
+  // ログアウト処理
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      alert("ログアウトに失敗しました: " + error.message)
+    } else {
+      window.location.href = "/" // トップページに遷移
+    }
+  }
 
   // ユーザー取得
   useEffect(() => {
@@ -160,6 +171,16 @@ export default function UserDashboard() {
 
   return (
     <div className="max-w-5xl mx-auto p-6">
+      {/* ログアウトボタン */}
+      <div className="flex justify-end mb-4">
+        <Button
+          onClick={handleLogout}
+          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+        >
+          ログアウト
+        </Button>
+      </div>
+
       <h1 className="text-3xl font-bold mb-8 text-center">利用者ページ - 本の借用・返却</h1>
 
       {/* ローディングオーバーレイ */}
@@ -244,9 +265,7 @@ export default function UserDashboard() {
                 {borrowings.map((b) => (
                   <tr
                     key={b.id}
-                    className={`hover:bg-gray-50 ${
-                      b.returned_at ? "bg-gray-50" : "bg-yellow-50"
-                    }`}
+                    className={`hover:bg-gray-50 ${b.returned_at ? "bg-gray-50" : "bg-yellow-50"}`}
                   >
                     <td className="border border-gray-300 px-4 py-2">{b.book_title}</td>
                     <td className="border border-gray-300 px-4 py-2 text-center">

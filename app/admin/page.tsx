@@ -131,9 +131,27 @@ export default function AdminPage() {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
   }
 
+  // ログアウト処理
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      alert("ログアウトに失敗しました: " + error.message)
+    } else {
+      window.location.href = "/" // ログインページのURLに変更してください
+    }
+  }
+
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
-      <h1 className="text-3xl font-bold mb-6 text-center">管理者ページ - 本の管理</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-center flex-grow">管理者ページ - 本の管理</h1>
+        <button
+          onClick={handleLogout}
+          className="ml-4 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+        >
+          ログアウト
+        </button>
+      </div>
 
       {/* 検索 */}
       <div className="mb-6 flex items-center space-x-3">
